@@ -10,9 +10,12 @@ from flask import Config
 threshold = 0.65
 # for detecting duplicates
 nmsThreshold =0.2
-cap = cv2.VideoCapture(0)
-cap.set(3,720)
-cap.set(4,480)
+
+
+
+# cap = cv2.VideoCapture(0)
+# cap.set(3,720)
+# cap.set(4,480)
 
 
 NamesOfObjects= []
@@ -24,20 +27,26 @@ with open(NameFile,'rt') as f:
 print(NamesOfObjects)
 
 
-# Using pretrained model
-# document coco
+# Using pretrained model   -.... documentation coco
 net = cv2.dnn_DetectionModel(WeightFile,ConfigFile)
 net.setInputSize(320, 320)
 net.setInputScale(1.0 / 127.5)
 net.setInputMean((127.5, 127.5, 127.5))
 net.setInputSwapRB(True)
 
+drone = tello.Tello()
+drone.connect()
+print(drone.get_battery())
+drone.streamoff()
+drone.streamon()
 
+# drone.takeoff()
 
 
 
 while True:
-    success ,img = cap.read()
+    # success ,img = cap.read()  # for webcam
+    img = drone.get_frame_read().frame
     classIds, confidence , boundingBox= net.detect(img, confThreshold=threshold, nmsThreshold=nmsThreshold)
     try:
         for classId, conf, box in zip(classIds.flatten(), confidence.flatten(), boundingBox):
@@ -47,5 +56,10 @@ while True:
                         1, (0, 255, 0), 2)
     except:
         pass
+
+
+        # to prevent auto off drone
+    drone.send_rc_control(0,0,0,0)
+
     cv2.imshow("img",img)
     cv2.waitKey(1)

@@ -6,11 +6,20 @@ import cv2
 
 drone = tello.Tello()
 drone.connect()
- 
 print(drone.get_battery())
  
-drone.takeoff()
-drone.stream_on
+print(drone.get_barometer())
+print(drone.get_flight_time())
+print(drone.get_highest_temperature())
+print(drone.get_lowest_temperature())
+print(drone.get_udp_video_address())
+print(drone.get_temperature())
+
+
+
+ 
+# drone.takeoff()
+# drone.stream_on
 
 
 
@@ -27,14 +36,14 @@ drone.stream_on
 
 
  #    right,forward,  ,rotate (yaw)right  
-drone.send_rc_control(0, 0, 0, 100)
+# drone.send_rc_control(0, 0, 0, 100)
  
-sleep(2)
+# sleep(2)
 
 
 
 
 
 ## whitch landing -> to control like heli rather than plane
-drone.send_rc_control(0, 0, 0, 0) 
-drone.land()
+# drone.send_rc_control(0, 0, 0, 0) 
+# drone.land()
